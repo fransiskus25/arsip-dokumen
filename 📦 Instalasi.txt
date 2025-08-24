@@ -1,0 +1,47 @@
+📦 Instalasi
+1. Clone Repository
+bash
+git clone https://github.com/username/arsip-dokumen.git
+cd arsip-dokumen
+2. Setup Database
+sql
+-- Buat database baru
+CREATE DATABASE arsip_dokumen CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Import file SQL
+USE arsip_dokumen;
+SOURCE database/structure.sql;
+3. Konfigurasi
+Edit file config/database.php:
+
+php
+<?php
+class Database {
+    private $host = "localhost";
+    private $db_name = "arsip_dokumen";
+    private $username = "root";      // Sesuaikan dengan MySQL username
+    private $password = "";          // Sesuaikan dengan MySQL password
+    public $conn;
+    // ... kode lainnya
+}
+?>
+4. Setup Folder Permissions
+bash
+# Berikan permission write pada folder uploads
+chmod 755 uploads/
+chmod 755 uploads/documents/
+chmod 755 uploads/profiles/
+
+# Atau di Windows:
+# Klik kanan folder → Properties → Security → Edit permissions
+5. Akses Aplikasi
+Buka browser dan akses:
+
+text
+http://localhost/arsip-dokumen/
+🔐 Login Default
+Admin Account:
+
+Username: admin
+
+Password: password
