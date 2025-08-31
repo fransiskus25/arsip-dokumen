@@ -15,16 +15,21 @@ $document = $documentController->getDocumentById($_GET['id']);
 
 if (!$document) {
     echo '<div class="alert alert-danger">Dokumen tidak ditemukan!</div>';
-    require_once '../partials/footer.php';
     exit();
 }
+
+// Simpan halaman asal berdasarkan referer
+setReturnUrlFromReferer();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = $documentController->updateDocument($_GET['id'], $_POST, $_FILES['document_file']);
     
     if ($result) {
         $_SESSION['flash_message'] = '✅ Dokumen berhasil diperbarui!';
-        header('Location: view.php?id=' . $_GET['id']);
+        
+        // Redirect berdasarkan jenis dokumen yang diedit
+        $redirectUrl = getReturnUrlByDocumentType($document['document_type']);
+        header('Location: ' . $redirectUrl);
         exit();
     } else {
         echo '<div class="alert alert-danger">❌ Gagal memperbarui dokumen!</div>';
@@ -32,25 +37,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $categories = $documentController->getCategories();
+$returnUrl = getReturnUrl();
 ?>
 
 <!DOCTYPE html>
-<html lang="id" data-bs-theme="<?php echo isset($_COOKIE['dark_mode']) && $_COOKIE['dark_mode'] === 'true' ? 'dark' : 'light'; ?>">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo SITE_NAME; ?> - Edit Dokumen</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
-        :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        /* RESET TOTAL - HAPUS SEMUA STYLING YANG ADA */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        /* HEADER SEDERHANA */
+        .custom-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        /* KONTEN UTAMA - PASTIKAN LEBAR PENUH */
+        .main-content {
+            padding: 2rem;
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        /* CONTAINER UTAMA */
+        .form-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* FORM STYLES */
         .premium-form {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            background: white;
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             padding: 40px;
@@ -59,7 +104,7 @@ $categories = $documentController->getCategories();
         }
 
         .form-header {
-            background: var(--primary-gradient);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 25px 30px;
             border-radius: 15px 15px 0 0;
@@ -90,7 +135,7 @@ $categories = $documentController->getCategories();
             padding: 15px 20px;
             font-size: 1rem;
             transition: all 0.3s ease;
-            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            background: #f8f9fa;
         }
 
         .form-control:focus {
@@ -104,7 +149,7 @@ $categories = $documentController->getCategories();
             border-radius: 12px;
             padding: 15px 20px;
             font-size: 1rem;
-            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            background: #f8f9fa;
         }
 
         .file-upload-area {
@@ -112,14 +157,14 @@ $categories = $documentController->getCategories();
             border-radius: 15px;
             padding: 40px 20px;
             text-align: center;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: #f8f9fa;
             transition: all 0.3s ease;
             cursor: pointer;
         }
 
         .file-upload-area:hover {
             border-color: #667eea;
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            background: #ffffff;
             transform: translateY(-3px);
         }
 
@@ -130,7 +175,7 @@ $categories = $documentController->getCategories();
         }
 
         .btn-submit {
-            background: var(--primary-gradient);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
             border-radius: 15px;
             padding: 18px 35px;
@@ -148,7 +193,7 @@ $categories = $documentController->getCategories();
         }
 
         .btn-cancel {
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            background: linear-gradient(135deg, #6c757d 0%, '495057' 100%);
             border: none;
             border-radius: 15px;
             padding: 18px 35px;
@@ -167,7 +212,7 @@ $categories = $documentController->getCategories();
         }
 
         .current-file {
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            background: #e3f2fd;
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 20px;
@@ -201,27 +246,6 @@ $categories = $documentController->getCategories();
             animation: slideIn 0.6s ease-out;
         }
 
-        /* Dark mode support */
-        [data-bs-theme="dark"] .premium-form {
-            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
-        }
-
-        [data-bs-theme="dark"] .form-control {
-            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
-            border-color: #4a5568;
-            color: #e2e8f0;
-        }
-
-        [data-bs-theme="dark"] .file-upload-area {
-            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
-            border-color: #4a5568;
-        }
-
-        [data-bs-theme="dark"] .current-file {
-            background: linear-gradient(135deg, #2c5282 0%, #2a4365 100%);
-            border-left-color: #63b3ed;
-        }
-
         /* Responsive design */
         @media (max-width: 768px) {
             .premium-form {
@@ -237,25 +261,47 @@ $categories = $documentController->getCategories();
             .form-control, .form-select {
                 padding: 12px 15px;
             }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .custom-header {
+                padding: 1rem;
+            }
         }
     </style>
 </head>
 <body>
-    <?php require_once __DIR__ . '/../partials/header.php'; ?>
+    <!-- HEADER SEDERHANA TANPA SIDEBAR -->
+    <header class="custom-header">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-archive me-3 fs-4"></i>
+            <h1 class="h4 mb-0"><?php echo SITE_NAME; ?></h1>
+        </div>
+        <div>
+            <a href="<?php echo SITE_URL; ?>/dashboard.php" class="btn btn-light btn-sm me-2">
+                <i class="fas fa-home me-1"></i>Dashboard
+            </a>
+            <a href="<?php echo $returnUrl; ?>" class="btn btn-light btn-sm">
+                <i class="fas fa-arrow-left me-1"></i>Kembali
+            </a>
+        </div>
+    </header>
 
-    <div class="main-content">
-        <div class="container-fluid py-4">
+    <main class="main-content">
+        <div class="form-container">
             <!-- Header -->
             <div class="row mb-4">
                 <div class="col-12">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h1 class="display-5 fw-bold text-primary">
-                                <i class="fas fa-edit me-3"></i>Edit Dokumen
+                            <h1 class="h3 fw-bold text-primary">
+                                <i class="fas fa-edit me-2"></i>Edit Dokumen
                             </h1>
                             <p class="text-muted">Perbarui informasi dokumen dengan form berikut</p>
                         </div>
-                        <a href="view.php?id=<?php echo $document['id']; ?>" class="btn btn-outline-secondary btn-lg">
+                        <a href="<?php echo $returnUrl; ?>" class="btn btn-outline-secondary">
                             <i class="fas fa-arrow-left me-2"></i>Kembali
                         </a>
                     </div>
@@ -423,7 +469,7 @@ $categories = $documentController->getCategories();
                                     </button>
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="view.php?id=<?php echo $document['id']; ?>" class="btn-cancel">
+                                    <a href="<?php echo $returnUrl; ?>" class="btn-cancel">
                                         <i class="fas fa-times me-2"></i>Batal
                                     </a>
                                 </div>
@@ -433,7 +479,7 @@ $categories = $documentController->getCategories();
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <script>
     // File upload preview
@@ -463,18 +509,18 @@ $categories = $documentController->getCategories();
     fileArea.addEventListener('dragover', (e) => {
         e.preventDefault();
         fileArea.style.borderColor = '#667eea';
-        fileArea.style.background = 'linear-gradient(135deg, #ffffff 0%, #e3f2fd 100%)';
+        fileArea.style.background = '#e3f2fd';
     });
 
     fileArea.addEventListener('dragleave', () => {
         fileArea.style.borderColor = '#dee2e6';
-        fileArea.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+        fileArea.style.background = '#f8f9fa';
     });
 
     fileArea.addEventListener('drop', (e) => {
         e.preventDefault();
         fileArea.style.borderColor = '#dee2e6';
-        fileArea.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+        fileArea.style.background = '#f8f9fa';
         
         if (e.dataTransfer.files.length) {
             fileInput.files = e.dataTransfer.files;
@@ -482,7 +528,5 @@ $categories = $documentController->getCategories();
         }
     });
     </script>
-
-    <?php require_once __DIR__ . '/../partials/footer.php'; ?>
 </body>
 </html>

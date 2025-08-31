@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 24 Agu 2025 pada 05.32
+-- Waktu pembuatan: 31 Agu 2025 pada 07.21
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -56,12 +56,12 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`id`, `name`, `description`, `created_at`, `updated_at`) VALUES
-(1, 'Surat Keputusan', 'Dokumen surat keputusan resmi', '2025-08-23 08:35:04', '2025-08-23 08:35:04'),
-(2, 'Nota Dinas', 'Dokumen nota dinas internal', '2025-08-23 08:35:04', '2025-08-23 08:35:04'),
-(3, 'Undangan', 'Dokumen undangan meeting atau acara', '2025-08-23 08:35:04', '2025-08-23 08:35:04'),
-(4, 'Laporan', 'Dokumen laporan kegiatan atau keuangan', '2025-08-23 08:35:04', '2025-08-23 08:35:04'),
-(5, 'Surat Masuk', 'Surat masuk dari external', '2025-08-23 08:35:04', '2025-08-23 08:35:04'),
-(6, 'Surat Keluar', 'Surat keluar ke external', '2025-08-23 08:35:04', '2025-08-23 08:35:04');
+(1, 'Administrasi', 'Dokumen administrasi umum', '2025-08-31 04:27:17', '2025-08-31 04:27:17'),
+(2, 'Keuangan', 'Dokumen terkait keuangan dan anggaran', '2025-08-31 04:27:17', '2025-08-31 04:27:17'),
+(3, 'Sumber Daya Manusia', 'Dokumen kepegawaian dan HRD', '2025-08-31 04:27:17', '2025-08-31 04:27:17'),
+(4, 'Proyek', 'Dokumen manajemen proyek', '2025-08-31 04:27:17', '2025-08-31 04:27:17'),
+(5, 'Hukum', 'Dokumen legal dan peraturan', '2025-08-31 04:27:17', '2025-08-31 04:27:17'),
+(6, 'Laporan', 'Berbagai jenis laporan kegiatan', '2025-08-31 04:27:17', '2025-08-31 04:27:17');
 
 -- --------------------------------------------------------
 
@@ -92,8 +92,9 @@ CREATE TABLE `documents` (
 --
 
 INSERT INTO `documents` (`id`, `document_number`, `document_type`, `title`, `description`, `category_id`, `sender`, `receiver`, `file_path`, `file_name`, `file_size`, `tags`, `created_by`, `created_at`, `updated_at`) VALUES
-(1, '001/SK/I/2023', 'incoming', 'Surat Keputusan Pengangkatan', 'Surat keputusan pengangkatan staff baru', 1, 'Direktur Utama', NULL, NULL, NULL, NULL, NULL, 1, '2025-08-23 08:35:04', '2025-08-23 08:35:04'),
-(3, '003/UND/III/2023', 'incoming', 'Undangan Workshop', 'Undangan workshop teknologi terkini', 3, 'PIC Workshop', NULL, NULL, NULL, NULL, NULL, 1, '2025-08-23 08:35:04', '2025-08-23 08:35:04');
+(2, '002/SM/KEMENKEU/2024', 'incoming', 'Pemberitahuan Perubahan Kebijakan Pajak', 'Pemberitahuan resmi mengenai perubahan kebijakan perpajakan tahun 2024', 2, 'Kementerian Keuangan', 'PT. Sejahtera Abadi', 'D:/xampp/htdocs/arsip-dokumen/uploads/documents/68b3d090f3d63_1756614800.pdf', '#4 Flutter Basic.pdf', 4944303, 'pajak,kebijakan,perubahan', 1, '2025-08-31 04:27:17', '2025-08-30 21:33:20'),
+(6, '001/SK/HRD/2024', 'outgoing', 'Pengumuman Kenaikan Gaji', 'Pengumuman resmi kenaikan gaji karyawan tahun 2024', 3, 'PT. Maju Jaya', 'Seluruh Karyawan', 'D:/xampp/htdocs/arsip-dokumen/uploads/documents/68b3d0f663518_1756614902.pdf', '#5 Flutter Widget Design UI.pdf', 10191738, 'gaji,kenaikan,pengumuman', 1, '2025-08-31 04:27:17', '2025-08-30 21:35:02'),
+(11, '001/LP/KEU/2024', 'report', 'Laporan Keuangan Bulanan Januari 2024', 'Laporan keuangan lengkap untuk bulan Januari 2024', 2, 'PT. Maju Jaya', 'Direktur Utama', '/uploads/documents/laporan_keuangan_jan.pdf', 'laporan_keuangan_jan.pdf', 4096, 'keuangan,bulanan,laporan', 1, '2025-08-31 04:27:17', '2025-08-31 04:27:17');
 
 -- --------------------------------------------------------
 
@@ -134,7 +135,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `email`, `full_name`, `role`, `photo`, `created_at`, `updated_at`) VALUES
-(1, 'admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin@example.com', 'Administrator', 'admin', NULL, '2025-08-23 08:35:04', '2025-08-23 08:35:04');
+(1, 'Frans25', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin@example.com', 'Administrator', 'admin', NULL, '2025-08-23 08:35:04', '2025-08-29 23:14:53');
 
 --
 -- Indexes for dumped tables
@@ -196,7 +197,7 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT untuk tabel `documents`
 --
 ALTER TABLE `documents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT untuk tabel `notifications`

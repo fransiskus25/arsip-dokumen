@@ -60,24 +60,14 @@ $darkMode = isset($_COOKIE['dark_mode']) && $_COOKIE['dark_mode'] === 'true';
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="<?php echo SITE_URL; ?>/dashboard.php">
-                            <i class="fas fa-home me-1"></i> Dashboard
-                        </a>
-                    </li>
+               
                     
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user me-1"></i> <?php echo htmlspecialchars($_SESSION['full_name']); ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>/views/settings/index.php">
-                                <i class="fas fa-cog me-2"></i> Pengaturan
-                            </a></li>
-                            <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>/views/settings/index.php">
-                                <i class="fas fa-user me-2"></i> Profil
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
+    
                             <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>/logout.php">
                                 <i class="fas fa-sign-out-alt me-2"></i> Logout
                             </a></li>

@@ -65,7 +65,7 @@ class DocumentController {
         $this->document->description = $data['description'] ?? $document['description'];
         $this->document->category_id = $data['category_id'] ?? $document['category_id'];
         $this->document->sender = $data['sender'] ?? $document['sender'];
-        $this->document->receiver = $data['receiver'] ?? $document['receiver'];
+        $this->document->receiver = $data['receiver'] ?? $document['receiver']; // PERBAIKAN DI SINI
         $this->document->tags = $data['tags'] ?? $document['tags'];
         $this->document->file_path = $document['file_path'] ?? '';
         $this->document->file_name = $document['file_name'] ?? '';
@@ -163,4 +163,3 @@ class DocumentController {
         return $document;
     }
 }
-?>

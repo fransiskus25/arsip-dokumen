@@ -42,6 +42,6 @@ http://localhost/arsip-dokumen/
 🔐 Login Default
 Admin Account:
 
-Username: admin
+Username: frans25
 
 Password: password
